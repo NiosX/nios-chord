@@ -2,66 +2,62 @@
 
 namespace Note;
 
-use App\Scale\Services\NoteService;
 use PHPUnit\Framework\TestCase;
-use App\Scale\Entities\Note;
+use Domains\Notes\Factories\NoteFactory;
+use Domains\Notes\Models\LatinKeyNotation;
+use Domains\Notes\Models\Note;
+use Domains\Notes\Services\NoteService;
 
 class TestNote extends TestCase
 {
-    /**
-     * @var NoteService $noteService
-     */
-    public $noteService;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->noteService = new NoteService();
-    }
 
     public function testGetChromaticNotes()
     {
-        $chromaticNotes = $this->noteService->getChromaticNotes();
+        $chromaticNotes = NoteFactory::getChromaticNotes();
 
         self::assertCount( 12, $chromaticNotes );
-        self::assertEquals( "C", $chromaticNotes[1]->getName() );
-        self::assertEquals( "C#", $chromaticNotes[2]->getName() );
-        self::assertEquals( "D", $chromaticNotes[3]->getName() );
-        self::assertEquals( "D#", $chromaticNotes[4]->getName() );
-        self::assertEquals( "E", $chromaticNotes[5]->getName() );
-        self::assertEquals( "F", $chromaticNotes[6]->getName() );
-        self::assertEquals( "F#", $chromaticNotes[7]->getName() );
-        self::assertEquals( "G", $chromaticNotes[8]->getName() );
-        self::assertEquals( "G#", $chromaticNotes[9]->getName() );
-        self::assertEquals( "A", $chromaticNotes[10]->getName() );
-        self::assertEquals( "A#", $chromaticNotes[11]->getName() );
-        self::assertEquals( "B", $chromaticNotes[12]->getName() );
+        self::assertEquals( "C", $chromaticNotes["C"]->getName() );
+        self::assertEquals( "C#", $chromaticNotes["C#"]->getName() );
+        self::assertEquals( "D", $chromaticNotes["D"]->getName() );
+        self::assertEquals( "D#", $chromaticNotes["D#"]->getName() );
+        self::assertEquals( "E", $chromaticNotes["E"]->getName() );
+        self::assertEquals( "F", $chromaticNotes["F"]->getName() );
+        self::assertEquals( "F#", $chromaticNotes["F#"]->getName() );
+        self::assertEquals( "G", $chromaticNotes["G"]->getName() );
+        self::assertEquals( "G#", $chromaticNotes["G#"]->getName() );
+        self::assertEquals( "A", $chromaticNotes["A"]->getName() );
+        self::assertEquals( "A#", $chromaticNotes["A#"]->getName() );
+        self::assertEquals( "B", $chromaticNotes["B"]->getName() );
     }
 
-    public function testGetChromaticLatinNotes()
+    public function testGetChromaticNotesInLatinNotation()
     {
-        $chromaticNotes = $this->noteService->getChromaticLatinNotes();
+        $latinKeyNotation = new LatinKeyNotation();
 
-        self::assertCount( 12, $chromaticNotes );
-        self::assertEquals( "DO", $chromaticNotes["C"]->getName() );
-        self::assertEquals( "DO#", $chromaticNotes["C#"]->getName() );
-        self::assertEquals( "RE", $chromaticNotes["D"]->getName() );
-        self::assertEquals( "RE#", $chromaticNotes["D#"]->getName() );
-        self::assertEquals( "MI", $chromaticNotes["E"]->getName() );
-        self::assertEquals( "FA", $chromaticNotes["F"]->getName() );
-        self::assertEquals( "FA#", $chromaticNotes["F#"]->getName() );
-        self::assertEquals( "SOL", $chromaticNotes["G"]->getName() );
-        self::assertEquals( "SOL#", $chromaticNotes["G#"]->getName() );
-        self::assertEquals( "LA", $chromaticNotes["A"]->getName() );
-        self::assertEquals( "LA#", $chromaticNotes["A#"]->getName() );
-        self::assertEquals( "SI", $chromaticNotes["B"]->getName() );
+        $chromaticLatinNotes = NoteService::changeKeyNotation( NoteFactory::getChromaticNotes(), $latinKeyNotation );
+
+        self::assertCount( 12, $chromaticLatinNotes );
+        self::assertEquals( "DO", $chromaticLatinNotes["C"]->getName() );
+        self::assertEquals( "DO#", $chromaticLatinNotes["C#"]->getName() );
+        self::assertEquals( "RE", $chromaticLatinNotes["D"]->getName() );
+        self::assertEquals( "RE#", $chromaticLatinNotes["D#"]->getName() );
+        self::assertEquals( "MI", $chromaticLatinNotes["E"]->getName() );
+        self::assertEquals( "FA", $chromaticLatinNotes["F"]->getName() );
+        self::assertEquals( "FA#", $chromaticLatinNotes["F#"]->getName() );
+        self::assertEquals( "SOL", $chromaticLatinNotes["G"]->getName() );
+        self::assertEquals( "SOL#", $chromaticLatinNotes["G#"]->getName() );
+        self::assertEquals( "LA", $chromaticLatinNotes["A"]->getName() );
+        self::assertEquals( "LA#", $chromaticLatinNotes["A#"]->getName() );
+        self::assertEquals( "SI", $chromaticLatinNotes["B"]->getName() );
     }
 
     public function testGetNoteByName()
     {
-        $note = $this->noteService->getNoteByName( "G" );
+        $chromaticNotes = NoteFactory::getChromaticNotes();
 
-        self::assertInstanceOf(Note::class, $note);
+        $note = NoteFactory::getNoteByName( "G", $chromaticNotes );
+
+        self::assertInstanceOf( Note::class, $note );
         self::assertEquals( "G", $note->getName() );
     }
 
